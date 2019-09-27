@@ -21,37 +21,42 @@ namespace PerformanceBiller
             Amount amount;
             var invoice = _jsonReader.GetInvoice();
 
-            var volumeCredits = 0;
             var result = $"Statement for {invoice.Customer}\n";
-            var cultureInfo = new CultureInfo("en-US");
-
-            foreach (var performance in invoice.Performances) { //para cada performance existente
+            
+            foreach (var performance in invoice.Performances) { 
                 var play = _jsonReader.GetPlayById(performance.PlayId);
-                switch (play.Type) { //Obtem tipo do play
-                    case PlayType.Tragedy: // se for tragedy
-                        amount = new Tragedy();
-                        amount.Calculate(performance);
-                        break;
-                    case PlayType.Comedy:
-                        amount = new Comedy();
-                        amount.Calculate(performance);
-                        break;
-                    default:
-                        throw new Exception($"unknown type: { play.Type}");
-                }
+
+                amount = SelectType(play.Type);
+                amount.Calculate(performance);
 
                 // add volume credits
-                volumeCredits += Math.Max(performance.Audience - 30, 0);
-                // add extra credit for every ten comedy attendees
-                if (PlayType.Comedy == play.Type) volumeCredits += performance.Audience / 5;
-                // print line for this order
-                result += $" {play.Name}: {(amount.AmountValue / 100).ToString("C", cultureInfo)} ({performance.Audience} seats)\n";
-                amount.TotalAmount += amount.AmountValue;
-             }
-             result += $"Amount owed is {(amount.TotalAmount / 100).ToString("C", cultureInfo)}\n";
-             result += $"You earned {volumeCredits} credits\n";
+                amount.AddVolumeCredits(performance);
 
-             return result;
+                // add extra credit for every ten comedy attendees
+                if(play.Type == PlayType.Comedy) ((Comedy)amount).AddExtraVolumeCredits(performance);
+
+                // print line for this order
+                result += $" {play.Name}: {amount.DividePorCem()} ({performance.Audience} seats)\n";
+                amount.SumAmount(amount.AmountValue);
+             }
+
+            //result += $"Amount owed is {amount.DividePorCem()}\n";
+            //result += $"You earned {amount.VolumeCredits} credits\n";
+
+            return result;
+        }
+
+        public Amount SelectType(PlayType type)
+        {
+            switch (type)
+            {
+                case PlayType.Tragedy: 
+                    return new Tragedy();
+                case PlayType.Comedy:
+                    return new Comedy();
+                default:
+                    throw new Exception("Error");
+            }
         }
     }
 }

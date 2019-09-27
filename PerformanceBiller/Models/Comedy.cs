@@ -8,6 +8,7 @@ namespace PerformanceBiller.Models
         public sealed override decimal TotalAmount { get; set; }
         protected sealed override int ComparatorValue { get; set; }
         protected sealed override int AdictionalValue { get; set; }
+        protected override int VolumeCredits { get; set; }
         private int AnotherValue { get; }
 
         public Comedy()
@@ -25,7 +26,10 @@ namespace PerformanceBiller.Models
             {
                 AmountValue += AdictionalValue * (perf.Audience - ComparatorValue);
             }
+
             AmountValue += AnotherValue * perf.Audience;
         }
+
+        public void AddExtraVolumeCredits(Performance perf) => VolumeCredits += perf.Audience / 5;
     }
 }
