@@ -8,7 +8,7 @@ namespace PerformanceBiller.Models
         public sealed override decimal TotalAmount { get; set; }
         protected sealed override int ComparatorValue { get; set; }
         protected sealed override int AdictionalValue { get; set; }
-        protected override int VolumeCredits { get; set; }
+        protected new int VolumeCredits { get; set; }
 
         public Tragedy()
         {

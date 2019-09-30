@@ -1,6 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using PerformanceBiller.Repository;
 using Xunit;
 
 namespace PerformanceBiller.Tests
@@ -17,7 +18,7 @@ namespace PerformanceBiller.Tests
                 "Amount owed is $1,730.00\n" +
                 "You earned 47 credits\n";
 
-            var statement = new Statement();
+            var statement = new Statement(new Repository.JsonReader());
 
             using (var invoicesFile = File.OpenText("..\\..\\..\\invoices.json"))
             using (var invoicesReader = new JsonTextReader(invoicesFile))

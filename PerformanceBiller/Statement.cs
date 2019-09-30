@@ -19,7 +19,7 @@ namespace PerformanceBiller
         public string Run(JObject invoiceObj, JObject plays)
         {
             Amount amount;
-            var invoice = _jsonReader.GetInvoice();
+            var invoice = _jsonReader.GetData<Invoice>(@"C:\repository\git\performance-biller\PerformanceBiller.Tests\invoices.json");
 
             var result = $"Statement for {invoice.Customer}\n";
             

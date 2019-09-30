@@ -1,10 +1,12 @@
-﻿using PerformanceBiller.Models;
+﻿using System.Collections.Generic;
+using PerformanceBiller.Models;
 
 namespace PerformanceBiller.Repository
 {
     public interface IJsonReader
     {
-        Invoice GetInvoice();
+        T GetData<T>(string path);
+        //Invoice<T> GetInvoice();
         Play GetPlayById(string playId);
     }
 }
